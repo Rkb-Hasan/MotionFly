@@ -23,7 +23,7 @@ export default function MyCam() {
         audio: false,
       });
       streamRef.current = stream;
-      console.dir(stream);
+      // console.dir(stream);
 
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
@@ -68,7 +68,7 @@ export default function MyCam() {
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
     const imageUrl = canvas.toDataURL("image/png");
-    console.log(imageUrl);
+
     setCapturedImage(imageUrl);
   };
 
@@ -82,7 +82,7 @@ export default function MyCam() {
   const startRecording = () => {
     const stream = videoRef.current.srcObject;
     const recorder = new MediaRecorder(stream);
-    console.dir(recorder);
+    // console.dir(recorder);
     mediaRecorderRef.current = recorder;
     chunksRef.current = [];
 
@@ -90,12 +90,15 @@ export default function MyCam() {
 
     recorder.onstop = () => {
       const blob = new Blob(chunksRef.current, { type: "video/webm" });
+      console.dir(blob);
+
       const url = URL.createObjectURL(blob);
+      console.dir(url);
 
       const a = document.createElement("a");
       a.href = url;
       a.download = "recording.webm";
-      a.click();
+      // a.click();
 
       URL.revokeObjectURL(url);
     };
@@ -166,7 +169,7 @@ export default function MyCam() {
                   <img
                     src={capturedImage}
                     alt="Preview"
-                    className="w-full max-w-[400px] rounded-lg shadow border"
+                    className="w-full max-w-[400px] rounded-lg shadow border transform rotate-y-180"
                   />
 
                   <div className="space-x-2">
