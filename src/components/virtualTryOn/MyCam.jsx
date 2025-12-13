@@ -133,7 +133,7 @@ export default function MyCam() {
               <video
                 controls
                 ref={videoRef}
-                className="w-full max-w-[850px] aspect-video object-cover rounded-lg border-4 border-yellow-400 transform rotate-y-180"
+                className="w-full max-w-[850px]  aspect-video object-cover rounded-lg border-4 border-yellow-400 transform rotate-y-180"
               />
 
               <div className="flex gap-4 my-4">
