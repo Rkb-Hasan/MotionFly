@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-
+import Dot from "../../assets/icons/dot.svg";
+import Play from "../../assets/icons/play.svg";
+import Capture from "../../assets/icons/screenshot.svg";
+import Stop from "../../assets/icons/stop.svg";
 export default function MyCam() {
   const videoRef = useRef(null);
   const mediaRecorderRef = useRef(null);
@@ -113,7 +116,7 @@ export default function MyCam() {
   };
 
   return (
-    <div className="flex-1 flex flex-col justify-center items-center border bg-black p-3">
+    <div className="relative flex flex-col justify-center items-center  max-h-[90vh]">
       {loading ? (
         <p className="text-red-700 min-h-[200px]">Loading...</p>
       ) : (
@@ -131,33 +134,45 @@ export default function MyCam() {
           ) : (
             <>
               <video
-                controls
                 ref={videoRef}
-                className="w-full max-w-[850px]  aspect-video object-cover rounded-lg border-4 border-yellow-400 transform rotate-y-180"
+                className="w-full  max-h-[90vh] aspect-video object-cover rounded-lg border-4 border-yellow-400 transform rotate-y-180 "
               />
 
-              <div className="flex gap-4 my-4">
+              <div className="absolute top-0 left-5 flex gap-4 my-4">
                 <button
                   onClick={handleCapture}
-                  className="px-4 py-2 bg-gray-700 text-white rounded"
+                  className="  text-white rounded"
                 >
-                  Capture
+                  <img className="w-5 h-5" src={Capture} alt="" srcset="" />
                 </button>
 
                 {!recording ? (
                   <button
                     onClick={startRecording}
-                    className="px-4 py-2 bg-green-600 text-white rounded"
+                    className="  text-white rounded"
                   >
-                    Start Recording
+                    <img className="w-5 h-5" src={Play} alt="" srcset="" />
                   </button>
                 ) : (
-                  <button
-                    onClick={stopRecording}
-                    className="px-4 py-2 bg-red-600 text-white rounded"
-                  >
-                    Stop Recording
-                  </button>
+                  <>
+                    <button
+                      onClick={stopRecording}
+                      className=" text-white rounded"
+                    >
+                      <img className="w-5 h-5" src={Stop} alt="" srcset="" />
+                    </button>
+                    <button
+                      onClick={stopRecording}
+                      className=" text-white rounded"
+                    >
+                      <img
+                        className="w-5 h-5 animate-pulse"
+                        src={Dot}
+                        alt=""
+                        srcset=""
+                      />
+                    </button>
+                  </>
                 )}
               </div>
 
