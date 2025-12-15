@@ -143,7 +143,7 @@ export default function MyCam() {
                   onClick={handleCapture}
                   className="  text-white rounded"
                 >
-                  <img className="w-5 h-5" src={Capture} alt="" srcset="" />
+                  <img className="w-5 h-5" src={Capture} alt="" />
                 </button>
 
                 {!recording ? (
@@ -151,7 +151,7 @@ export default function MyCam() {
                     onClick={startRecording}
                     className="  text-white rounded"
                   >
-                    <img className="w-5 h-5" src={Play} alt="" srcset="" />
+                    <img className="w-5 h-5" src={Play} alt="" />
                   </button>
                 ) : (
                   <>
@@ -159,18 +159,13 @@ export default function MyCam() {
                       onClick={stopRecording}
                       className=" text-white rounded"
                     >
-                      <img className="w-5 h-5" src={Stop} alt="" srcset="" />
+                      <img className="w-5 h-5" src={Stop} alt="" />
                     </button>
                     <button
                       onClick={stopRecording}
                       className=" text-white rounded"
                     >
-                      <img
-                        className="w-5 h-5 animate-pulse"
-                        src={Dot}
-                        alt=""
-                        srcset=""
-                      />
+                      <img className="w-5 h-5 animate-pulse" src={Dot} alt="" />
                     </button>
                   </>
                 )}
