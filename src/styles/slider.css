@@ -1,50 +1,6 @@
-.slider-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-  width: 100%;
-  padding-bottom: 8px;
-}
-
-.slider {
-  flex: 0 0 auto;
-  display: flex;
-  gap: 10px;
-  overflow-x: auto;
-}
-
-.slider::-webkit-scrollbar {
-  display: none;
-}
-
-.slide {
-  flex: 0 0 auto;
-  width: 72px;
-  height: 72px;
-}
-
-.slide img {
-  width: 100%;
-  height: 100%;
-  border-radius: 9999px;
-  object-fit: cover;
-}
-
-.nav-btn {
-  padding: 16px;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-.nav-btn img {
-  width: 28px;
-  height: 28px;
-}
-
-.rotate {
-  transform: rotateY(180deg);
-}
+/* .slider {
+  scrollbar-width: none;
+} */
 
 .focus-window {
   position: absolute;

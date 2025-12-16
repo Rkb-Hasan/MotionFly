@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import nextPrev from "../../assets/icons/next.svg";
 // import Test3 from "../../assets/images/products/link.jpg";
 import Test from "../../assets/images/products/profile_pic.jpg";
 // import Test2 from "../../assets/images/products/test.png";
 import "../../styles/slider.css";
 
-const products = [Test, Test];
+const products = [Test, Test, Test, Test, Test, Test, Test];
 
 const SLIDE_SIZE = 72;
 const GAP = 10;
@@ -14,78 +14,62 @@ const STEP = SLIDE_SIZE + GAP;
 export default function Slider() {
   const sliderRef = useRef(null);
   const indexRef = useRef(0);
+  // const [sidePadding, setSidePadding] = useState(0);
 
-  const [sidePadding, setSidePadding] = useState(0);
-
-  const scrollToIndex = () => {
-    // console.log(i, "index");
-    const el = sliderRef.current;
-    if (!el) return;
-
-    const left = 2 * sidePadding;
-    // console.log("left, sidePadding" + left, sidePadding);
-    el.scrollTo({ left, behavior: "smooth" });
-  };
-
-  // Calculate padding based on viewport geometry
   useEffect(() => {
-    const updatePadding = () => {
-      const el = sliderRef.current;
-      if (!el) return;
+    if (!sliderRef.current) return;
 
-      const containerWidth = el.clientWidth;
-      console.log("container" + containerWidth);
-      const padding = containerWidth / 2 + 120 - SLIDE_SIZE / 2;
-      // console.log("padding" + padding);
-      setSidePadding(Math.max(padding, 0));
-    };
-
-    updatePadding();
-    window.addEventListener("resize", updatePadding);
-    return () => window.removeEventListener("resize", updatePadding);
+    sliderRef.current.scrollTo({
+      left: 0,
+      behavior: "smooth",
+    });
   }, []);
 
-  // Initial alignment after padding is applied
-  useEffect(() => {
-    if (sidePadding) {
-      scrollToIndex();
-    }
-  }, [sidePadding]);
+  const scrollRight = () => {
+    indexRef.current = indexRef.current + 1;
+    // console.log(indexRef.current);
+    sliderRef.current.scrollBy({
+      left: 82,
+      behavior: "smooth",
+    });
+  };
+  const scrollLeft = () => {
+    indexRef.current = indexRef.current - 1;
+    console.log(indexRef.current);
 
-  const scrollPrev = () => {
-    indexRef.current = Math.max(indexRef.current - 1, 0);
-    scrollToIndex(indexRef.current);
+    sliderRef.current.scrollBy({
+      left: -82,
+      behavior: "smooth",
+    });
   };
 
-  const scrollNext = () => {
-    indexRef.current = Math.min(indexRef.current + 1, products.length - 1);
-    scrollToIndex(indexRef.current);
-  };
-
-  // console.log("render", num++, sidePadding);
   return (
-    <div className="slider-wrapper">
-      <button className="nav-btn" onClick={scrollPrev}>
-        <img src={nextPrev} alt="prev" className="rotate" />
+    <div className="relative flex items-center justify-between w-full pb-2">
+      <button onClick={scrollLeft} className="p-4 cursor-pointer">
+        <img
+          src={nextPrev}
+          alt="prev"
+          className="transform rotate-y-180 w-5 h-5"
+        />
       </button>
 
       <div
         ref={sliderRef}
-        className="slider bg-red-700 bg-clip-padding"
-        style={{
-          paddingLeft: sidePadding,
-          paddingRight: sidePadding,
-        }}
+        className="flex-1 flex gap-2.5 overflow-x-auto bg-red-700  items-center px-[420px] slider"
       >
         {products.map((p, i) => (
-          <div className="slide" key={i}>
-            <img src={p} alt="" />
+          <div className="w-[72px] h-[72px] rounded-full shrink-0" key={i}>
+            <img
+              className="w-[72px] h-[72px] rounded-full object-cover"
+              src={p}
+              alt=""
+            />
           </div>
         ))}
       </div>
 
-      <button className="nav-btn" onClick={scrollNext}>
-        <img src={nextPrev} alt="next" />
+      <button onClick={scrollRight} className="p-4 cursor-pointer">
+        <img src={nextPrev} alt="next" className=" w-5 h-5" />
       </button>
 
       <div className="focus-window" />
