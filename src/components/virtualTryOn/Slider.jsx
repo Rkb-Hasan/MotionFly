@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import nextPrev from "../../assets/icons/next.svg";
-import Test3 from "../../assets/images/products/link.jpg";
+// import Test3 from "../../assets/images/products/link.jpg";
 import Test from "../../assets/images/products/profile_pic.jpg";
-import Test2 from "../../assets/images/products/test.png";
+// import Test2 from "../../assets/images/products/test.png";
 import "../../styles/slider.css";
 
-const products = [Test, Test2, Test3, Test, Test2, Test3, Test, Test2, Test3];
+const products = [Test, Test];
 
 const SLIDE_SIZE = 72;
 const GAP = 10;
@@ -17,6 +17,16 @@ export default function Slider() {
 
   const [sidePadding, setSidePadding] = useState(0);
 
+  const scrollToIndex = () => {
+    // console.log(i, "index");
+    const el = sliderRef.current;
+    if (!el) return;
+
+    const left = 2 * sidePadding;
+    // console.log("left, sidePadding" + left, sidePadding);
+    el.scrollTo({ left, behavior: "smooth" });
+  };
+
   // Calculate padding based on viewport geometry
   useEffect(() => {
     const updatePadding = () => {
@@ -24,8 +34,9 @@ export default function Slider() {
       if (!el) return;
 
       const containerWidth = el.clientWidth;
-      const padding = containerWidth / 2 - SLIDE_SIZE / 2;
-
+      console.log("container" + containerWidth);
+      const padding = containerWidth / 2 + 120 - SLIDE_SIZE / 2;
+      // console.log("padding" + padding);
       setSidePadding(Math.max(padding, 0));
     };
 
@@ -34,20 +45,12 @@ export default function Slider() {
     return () => window.removeEventListener("resize", updatePadding);
   }, []);
 
-  // Scroll to an exact index (no drift, no overscroll)
-  const scrollToIndex = (i) => {
-    const el = sliderRef.current;
-    if (!el) return;
-
-    const left = sidePadding + i * STEP;
-    el.scrollTo({ left, behavior: "smooth" });
-  };
-
   // Initial alignment after padding is applied
-  // useEffect(() => {
-  //   indexRef.current = 0;
-  //   scrollToIndex(0);
-  // }, [sidePadding]);
+  useEffect(() => {
+    if (sidePadding) {
+      scrollToIndex();
+    }
+  }, [sidePadding]);
 
   const scrollPrev = () => {
     indexRef.current = Math.max(indexRef.current - 1, 0);
@@ -59,6 +62,7 @@ export default function Slider() {
     scrollToIndex(indexRef.current);
   };
 
+  // console.log("render", num++, sidePadding);
   return (
     <div className="slider-wrapper">
       <button className="nav-btn" onClick={scrollPrev}>
@@ -67,7 +71,7 @@ export default function Slider() {
 
       <div
         ref={sliderRef}
-        className="slider"
+        className="slider bg-red-700 bg-clip-padding"
         style={{
           paddingLeft: sidePadding,
           paddingRight: sidePadding,

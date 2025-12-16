@@ -7,10 +7,10 @@
 }
 
 .slider {
+  flex: 0 0 auto;
   display: flex;
   gap: 10px;
   overflow-x: auto;
-  scrollbar-width: none;
 }
 
 .slider::-webkit-scrollbar {
