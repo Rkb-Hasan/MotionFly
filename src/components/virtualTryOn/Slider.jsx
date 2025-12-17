@@ -1,75 +1,83 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import nextPrev from "../../assets/icons/next.svg";
-// import Test3 from "../../assets/images/products/link.jpg";
 import Test from "../../assets/images/products/profile_pic.jpg";
-// import Test2 from "../../assets/images/products/test.png";
 import "../../styles/slider.css";
 
-const products = [Test, Test, Test, Test, Test, Test, Test];
-
+const products = Array(21).fill(Test);
 const SLIDE_SIZE = 72;
 const GAP = 10;
 const STEP = SLIDE_SIZE + GAP;
 
 export default function Slider() {
   const sliderRef = useRef(null);
-  const indexRef = useRef(0);
-  // const [sidePadding, setSidePadding] = useState(0);
+  const [sidePadding, setSidePadding] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(0);
 
+  /* ---------- Padding calculation ---------- */
+  useLayoutEffect(() => {
+    if (!sliderRef.current) return;
+
+    const updatePadding = () => {
+      const width = sliderRef.current.clientWidth;
+      const padding = (width - SLIDE_SIZE) / 2;
+      setSidePadding(Math.max(padding, 0));
+    };
+
+    updatePadding();
+    window.addEventListener("resize", updatePadding);
+    return () => window.removeEventListener("resize", updatePadding);
+  }, []);
+
+  /* ---------- Scroll to index ---------- */
   useEffect(() => {
     if (!sliderRef.current) return;
 
     sliderRef.current.scrollTo({
-      left: 0,
+      left: activeIndex * STEP,
       behavior: "smooth",
     });
-  }, []);
+  }, [activeIndex]);
 
+  /* ---------- Controls ---------- */
   const scrollRight = () => {
-    indexRef.current = indexRef.current + 1;
-    // console.log(indexRef.current);
-    sliderRef.current.scrollBy({
-      left: 82,
-      behavior: "smooth",
-    });
+    setActiveIndex((i) => Math.min(i + 1, products.length - 1));
   };
-  const scrollLeft = () => {
-    indexRef.current = indexRef.current - 1;
-    console.log(indexRef.current);
 
-    sliderRef.current.scrollBy({
-      left: -82,
-      behavior: "smooth",
-    });
+  const scrollLeft = () => {
+    setActiveIndex((i) => Math.max(i - 1, 0));
   };
 
   return (
-    <div className="relative flex items-center justify-between w-full pb-2">
-      <button onClick={scrollLeft} className="p-4 cursor-pointer">
-        <img
-          src={nextPrev}
-          alt="prev"
-          className="transform rotate-y-180 w-5 h-5"
-        />
+    <div className="relative flex items-center w-full pb-2">
+      <button onClick={scrollLeft} className="p-4">
+        <img src={nextPrev} className="w-5 h-5 rotate-y-180" />
       </button>
 
       <div
         ref={sliderRef}
-        className="flex-1 flex gap-2.5 overflow-x-auto bg-red-700  items-center px-[420px] slider"
+        style={{
+          paddingLeft: sidePadding,
+          paddingRight: sidePadding,
+        }}
+        className="slider flex-1 flex gap-2.5 overflow-x-auto"
       >
         {products.map((p, i) => (
-          <div className="w-[72px] h-[72px] rounded-full shrink-0" key={i}>
-            <img
-              className="w-[72px] h-[72px] rounded-full object-cover"
-              src={p}
-              alt=""
-            />
+          <div
+            key={i}
+            className="
+              w-[72px] h-[72px]
+              shrink-0
+              rounded-full
+              snap-center
+            "
+          >
+            <img src={p} className="w-full h-full rounded-full object-cover" />
           </div>
         ))}
       </div>
 
-      <button onClick={scrollRight} className="p-4 cursor-pointer">
-        <img src={nextPrev} alt="next" className=" w-5 h-5" />
+      <button onClick={scrollRight} className="p-4">
+        <img src={nextPrev} className="w-5 h-5" />
       </button>
 
       <div className="focus-window" />

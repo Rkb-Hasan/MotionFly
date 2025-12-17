@@ -1,6 +1,11 @@
-/* .slider {
+.slider {
   scrollbar-width: none;
-} */
+  scroll-snap-type: x mandatory;
+}
+
+.slider::-webkit-scrollbar {
+  display: none;
+}
 
 .focus-window {
   position: absolute;
