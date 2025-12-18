@@ -3,7 +3,7 @@ import Dot from "../../assets/icons/dot.svg";
 import Play from "../../assets/icons/play.svg";
 import Capture from "../../assets/icons/screenshot.svg";
 import Stop from "../../assets/icons/stop.svg";
-export default function MyCam() {
+export default function MyCam({ selectedDress }) {
   const videoRef = useRef(null);
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
@@ -116,7 +116,7 @@ export default function MyCam() {
   };
 
   return (
-    <div className="relative flex flex-col justify-center items-center  max-h-[90vh]">
+    <div className="relative flex flex-col  max-h-[90vh]">
       {loading ? (
         <p className="text-red-700 min-h-[200px]">Loading...</p>
       ) : (
@@ -137,7 +137,7 @@ export default function MyCam() {
                 ref={videoRef}
                 className="w-full  max-h-[90vh] aspect-video object-cover rounded-lg border-4 border-yellow-400 transform rotate-y-180 "
               />
-
+              {/* capture and record */}
               <div className="absolute top-0 left-5 flex gap-4 my-4">
                 <button
                   onClick={handleCapture}
@@ -170,6 +170,23 @@ export default function MyCam() {
                   </>
                 )}
               </div>
+
+              {/* dress overlay */}
+              {selectedDress && (
+                <img
+                  src={selectedDress}
+                  alt="Dress overlay"
+                  className="absolute
+        top-[55%]
+        left-1/2
+        -translate-x-1/2
+        w-[40%]
+        h-[50%]
+        pointer-events-none
+        z-10
+      "
+                />
+              )}
 
               {/* -------------------------
               IMAGE PREVIEW SECTION

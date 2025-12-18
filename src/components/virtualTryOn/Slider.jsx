@@ -1,17 +1,16 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import nextPrev from "../../assets/icons/next.svg";
-import Test from "../../assets/images/products/profile_pic.jpg";
+// import Test from "../../assets/images/products/profile_pic.jpg";
+
 import "../../styles/slider.css";
 
-const products = Array(21).fill(Test);
 const SLIDE_SIZE = 72;
 const GAP = 10;
 const STEP = SLIDE_SIZE + GAP;
 
-export default function Slider() {
+export default function Slider({ products, activeIndex, onChangeIndex }) {
   const sliderRef = useRef(null);
   const [sidePadding, setSidePadding] = useState(0);
-  const [activeIndex, setActiveIndex] = useState(0);
 
   /* ---------- Padding calculation ---------- */
   useLayoutEffect(() => {
@@ -40,16 +39,16 @@ export default function Slider() {
 
   /* ---------- Controls ---------- */
   const scrollRight = () => {
-    setActiveIndex((i) => Math.min(i + 1, products.length - 1));
+    onChangeIndex((i) => Math.min(i + 1, products.length - 1));
   };
 
   const scrollLeft = () => {
-    setActiveIndex((i) => Math.max(i - 1, 0));
+    onChangeIndex((i) => Math.max(i - 1, 0));
   };
 
   return (
-    <div className="relative flex items-center w-full pb-2">
-      <button onClick={scrollLeft} className="p-4">
+    <div className="relative flex items-center w-full pb-2 hover:bg-gray-500/10 border-2 border-gray-200 backdrop-blur-[1px] z-20">
+      <button onClick={scrollLeft} className="p-4 cursor-pointer">
         <img src={nextPrev} className="w-5 h-5 rotate-y-180" />
       </button>
 
@@ -76,7 +75,7 @@ export default function Slider() {
         ))}
       </div>
 
-      <button onClick={scrollRight} className="p-4">
+      <button onClick={scrollRight} className="p-4 cursor-pointer">
         <img src={nextPrev} className="w-5 h-5" />
       </button>
 
