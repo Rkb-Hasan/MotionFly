@@ -47,7 +47,7 @@ export default function Slider({ products, activeIndex, onChangeIndex }) {
   };
 
   return (
-    <div className="relative flex items-center w-full pb-2 hover:bg-gray-500/10 border-2 border-gray-200 backdrop-blur-[1px] z-20">
+    <div className="relative flex items-center w-full pb-2 hover:bg-gray-500/10  backdrop-blur-[1px] z-20">
       <button onClick={scrollLeft} className="p-4 cursor-pointer">
         <img src={nextPrev} className="w-5 h-5 rotate-y-180" />
       </button>

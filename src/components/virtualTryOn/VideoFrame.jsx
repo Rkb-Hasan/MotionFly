@@ -11,51 +11,63 @@ export default function VideoFrame({ selectedDress, onLoading, onCamError }) {
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
   const streamRef = useRef(null);
-
-  const videoContraints = {
-    width: { max: 800 },
-    height: { max: 450 },
-    aspectRatio: { ideal: 1.7777777778 },
-  };
+  const cameraStartedRef = useRef(false);
 
   const startCamera = useCallback(async () => {
-    onLoading(true);
+    const videoContraints = {
+      width: { max: 800 },
+      height: { max: 450 },
+      aspectRatio: { ideal: 1.7777777778 },
+    };
+
+    if (cameraStartedRef.current) return;
+    cameraStartedRef.current = true;
+
     try {
+      onLoading(true);
+
       const stream = await navigator.mediaDevices.getUserMedia({
         video: videoContraints,
         audio: false,
       });
+
       streamRef.current = stream;
-      // console.dir(stream);
 
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         try {
           await videoRef.current.play();
-        } catch (playErr) {
-          console.log(playErr);
+        } catch (err) {
+          if (err.name !== "AbortError") {
+            console.error(err);
+          }
         }
       }
 
       onCamError(null);
     } catch (err) {
+      cameraStartedRef.current = false;
+
       if (err.name === "NotAllowedError") {
         onCamError("Camera permission denied. Please allow access.");
       } else {
+        console.log(err);
         onCamError("Camera failed: " + err.message);
       }
     } finally {
       onLoading(false);
     }
-  }, []);
+  }, [onLoading, onCamError]);
 
   useEffect(() => {
     startCamera();
 
-    // Cleanup media stream on unmount
     return () => {
+      cameraStartedRef.current = false;
+
       if (streamRef.current) {
         streamRef.current.getTracks().forEach((t) => t.stop());
+        streamRef.current = null;
       }
     };
   }, [startCamera]);
@@ -119,7 +131,7 @@ export default function VideoFrame({ selectedDress, onLoading, onCamError }) {
     <>
       <video
         ref={videoRef}
-        className="w-full  max-h-[90vh] aspect-video object-cover rounded-lg border-4 border-yellow-400 transform rotate-y-180 "
+        className="w-full  max-h-[90vh] aspect-video object-cover rounded-lg  transform rotate-y-180 "
       />
       {/* capture and record */}
       <div className="absolute top-0 left-5 flex gap-4 my-4">
