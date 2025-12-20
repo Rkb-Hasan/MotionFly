@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import ImageFrame from "./ImageFrame";
 import VideoFrame from "./VideoFrame";
 
 export default function MyCam({ selectedDress }) {
@@ -32,23 +33,14 @@ export default function MyCam({ selectedDress }) {
   return (
     <div className="relative flex flex-col items-center justify-center max-h-[88vh] border-4 border-yellow-400">
       {/* CAMERA ALWAYS MOUNTED */}
-      {!imageSrc && (
+      {imageSrc ? (
+        <ImageFrame imageSrc={imageSrc} />
+      ) : (
         <VideoFrame
           selectedDress={selectedDress}
           onLoading={setLoading}
           onCamError={setCameraError}
         />
-      )}
-
-      {/* UPLOADED IMAGE OVERLAY */}
-      {imageSrc && (
-        <div className="flex max-w-[40%] max-h-[40%] justify-center items-center py-5">
-          <img
-            src={imageSrc}
-            className="max-w-full max-h-full object-cover z-20"
-            alt="Uploaded"
-          />
-        </div>
       )}
 
       {/* LOADING OVERLAY */}
