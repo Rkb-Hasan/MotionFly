@@ -34,7 +34,7 @@ export default function MyCam({ selectedDress }) {
     <div className="relative flex flex-col items-center justify-center max-h-[88vh] border-4 border-yellow-400">
       {/* CAMERA ALWAYS MOUNTED */}
       {imageSrc ? (
-        <ImageFrame imageSrc={imageSrc} />
+        <ImageFrame selectedDress={selectedDress} imageSrc={imageSrc} />
       ) : (
         <VideoFrame
           selectedDress={selectedDress}
