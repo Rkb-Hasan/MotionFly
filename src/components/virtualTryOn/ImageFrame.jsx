@@ -1,7 +1,7 @@
 import {
-  PoseLandmarker,
-  FilesetResolver,
   DrawingUtils,
+  FilesetResolver,
+  PoseLandmarker,
 } from "@mediapipe/tasks-vision";
 import { useEffect, useRef, useState } from "react";
 
@@ -87,38 +87,54 @@ export default function ImageFrame({ imageSrc, selectedDress }) {
 
       // draw the dress
       const landmarks = results.landmarks[0];
+
       const leftShoulder = landmarks[11];
       const rightShoulder = landmarks[12];
+      const leftEar = landmarks[7];
+      const rightEar = landmarks[8];
       const leftHip = landmarks[23];
       const rightHip = landmarks[24];
 
       const canvasWidth = canvas.width;
       const canvasHeight = canvas.height;
 
+      // Shoulder X positions
       const leftShoulderX = leftShoulder.x * canvasWidth;
       const rightShoulderX = rightShoulder.x * canvasWidth;
 
-      const shoulderY = leftShoulder.y * canvasHeight;
+      // Shoulder midpoint (normalized)
+      const shoulderMidX = (leftShoulder.x + rightShoulder.x) / 2;
+      const shoulderMidY = (leftShoulder.y + rightShoulder.y) / 2;
 
-      const hipY = ((leftHip.y + rightHip.y) / 2) * canvasHeight;
+      // Ear midpoint (normalized)
+      const earMidY = (leftEar.y + rightEar.y) / 2;
 
+      // ---- CLAVICLE / COLLAR ANCHOR ----
+      const collarY = shoulderMidY - (shoulderMidY - earMidY) * 0.55;
+      const collarYPx = collarY * canvasHeight;
+
+      // Hip midpoint (pixels)
+      const hipYPx = ((leftHip.y + rightHip.y) / 2) * canvasHeight;
+
+      // ---- SIZE CALCULATION ----
       const shoulderWidth = Math.abs(rightShoulderX - leftShoulderX);
+      const torsoHeight = hipYPx - collarYPx;
 
-      const torsoHeight = hipY - shoulderY;
-
-      const dressWidth = shoulderWidth * 1.4;
+      const dressWidth = shoulderWidth * 1.35;
       const dressHeight = torsoHeight;
 
-      const centerX = (leftShoulderX + rightShoulderX) / 2;
-      const dressX = centerX - dressWidth / 2;
+      // ---- POSITION ----
+      const centerXPx = shoulderMidX * canvasWidth;
+      const dressX = centerXPx - dressWidth / 2;
+      const dressY = collarYPx;
 
-      // slightly below shoulders
-      const dressY = shoulderY + torsoHeight * 0.05;
-
+      // Debug box
       ctx.strokeStyle = "red";
-      ctx.lineWidth = 5;
-      // ctx.strokeRect(dressX, dressY, dressWidth, dressHeight);
-      if (dressImgRef.current && dressImgRef.current.complete) {
+      ctx.lineWidth = 4;
+      ctx.strokeRect(dressX, dressY, dressWidth, dressHeight);
+
+      // Draw dress
+      if (dressImgRef.current?.complete) {
         ctx.drawImage(
           dressImgRef.current,
           dressX,
