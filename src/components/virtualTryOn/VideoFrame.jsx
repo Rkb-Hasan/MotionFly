@@ -12,6 +12,7 @@ export default function VideoFrame({ selectedDress, onLoading, onCamError }) {
   const chunksRef = useRef([]);
   const streamRef = useRef(null);
   const cameraStartedRef = useRef(false);
+  const canvasRef = useRef(null);
 
   const startCamera = useCallback(async () => {
     const videoContraints = {
@@ -72,6 +73,36 @@ export default function VideoFrame({ selectedDress, onLoading, onCamError }) {
     };
   }, [startCamera]);
 
+  useEffect(() => {
+    if (!videoRef.current || !canvasRef.current) {
+      return;
+    }
+    console.log("ee");
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    let rafId;
+
+    const makeAnimation = () => {
+      console.log("an");
+      if (video.readyState >= 2) {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = "red";
+        ctx.beginPath();
+        ctx.arc(canvas.width / 2, canvas.height / 2, 8, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      rafId = requestAnimationFrame(makeAnimation);
+    };
+
+    makeAnimation();
+    return () => cancelAnimationFrame(rafId);
+  }, []);
+
   const handleCapture = () => {
     const canvas = document.createElement("canvas");
     const video = videoRef.current;
@@ -129,10 +160,19 @@ export default function VideoFrame({ selectedDress, onLoading, onCamError }) {
 
   return (
     <>
-      <video
-        ref={videoRef}
-        className="w-full  max-h-[90vh] aspect-video object-cover rounded-lg  transform rotate-y-180 "
-      />
+      <div>
+        <div className="relative w-full max-h-[90vh]"></div>
+        <video
+          ref={videoRef}
+          className="w-full aspect-video object-cover rounded-lg transform rotate-y-180"
+        />
+
+        {/* canvas */}
+        <canvas
+          ref={canvasRef}
+          className="absolute top-0 left-0 w-full h-full pointer-events-none transform rotate-y-180"
+        />
+      </div>
       {/* capture and record */}
       <div className="absolute top-0 left-5 flex gap-4 my-4">
         <button onClick={handleCapture} className="  text-white rounded">
@@ -154,22 +194,6 @@ export default function VideoFrame({ selectedDress, onLoading, onCamError }) {
           </>
         )}
       </div>
-
-      {/* dress overlay */}
-      {selectedDress && (
-        <img
-          src={selectedDress}
-          alt="Dress overlay"
-          className="absolute top-[55%]
-        left-1/2
-        -translate-x-1/2
-        w-[40%]
-        h-[50%]
-        pointer-events-none
-        z-10
-      "
-        />
-      )}
 
       {/* -------------------------
               IMAGE PREVIEW SECTION

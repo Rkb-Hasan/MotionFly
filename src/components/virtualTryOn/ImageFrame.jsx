@@ -11,7 +11,6 @@ export default function ImageFrame({ imageSrc, selectedDress }) {
   const poseLandMarkerRef = useRef(null);
   const [poseReady, setPoseReady] = useState(false);
   const [dressReady, setDressReady] = useState(false);
-  // const [detecting, setDetecting] = useState(false);
   const dressImgRef = useRef(null);
 
   useEffect(() => {
@@ -179,22 +178,6 @@ export default function ImageFrame({ imageSrc, selectedDress }) {
         ref={canvasRef}
         className="absolute top-0 left-0 w-full h-full pointer-events-none"
       />
-
-      {/* dress overlay */}
-      {/* {selectedDress && (
-        <img
-          src={selectedDress}
-          alt="Dress overlay"
-          className="absolute top-[55%]
-        left-1/2
-        -translate-x-1/2
-        w-[40%]
-        h-[50%]
-        pointer-events-none
-        z-10
-      "
-        />
-      )} */}
     </div>
   );
 }
