@@ -74,17 +74,18 @@ export default function VideoFrame({ selectedDress, onLoading, onCamError }) {
   }, [startCamera]);
 
   useEffect(() => {
-    if (!videoRef.current || !canvasRef.current) {
-      return;
-    }
-    console.log("ee");
+    if (!videoRef.current || !canvasRef.current) return;
+
+    let running = true;
+    let rafId;
+
     const video = videoRef.current;
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
-    let rafId;
 
     const makeAnimation = () => {
-      console.log("an");
+      if (!running) return;
+      console.log("än");
       if (video.readyState >= 2) {
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
@@ -96,11 +97,16 @@ export default function VideoFrame({ selectedDress, onLoading, onCamError }) {
         ctx.arc(canvas.width / 2, canvas.height / 2, 8, 0, Math.PI * 2);
         ctx.fill();
       }
+
       rafId = requestAnimationFrame(makeAnimation);
     };
 
     makeAnimation();
-    return () => cancelAnimationFrame(rafId);
+
+    return () => {
+      running = false;
+      if (rafId) cancelAnimationFrame(rafId);
+    };
   }, []);
 
   const handleCapture = () => {

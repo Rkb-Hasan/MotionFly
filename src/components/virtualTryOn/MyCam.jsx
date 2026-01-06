@@ -26,33 +26,17 @@ export default function MyCam({ selectedDress }) {
     if (file) {
       const imgUrl = URL.createObjectURL(file);
       setImageSrc(imgUrl);
-      setCameraError(null); // Clear error since we now have an image
+      setCameraError(null);
     }
   };
-
+  console.log(cameraError);
   return (
-    <div className="relative flex flex-col items-center justify-center max-h-[88vh] border-4 border-yellow-400">
+    <div className="relative flex flex-col items-center justify-center min-h-[88vh] max-h-[89vh] border-4 border-yellow-400 ">
       {/* CAMERA ALWAYS MOUNTED */}
       {imageSrc ? (
         <ImageFrame selectedDress={selectedDress} imageSrc={imageSrc} />
-      ) : (
-        <VideoFrame
-          selectedDress={selectedDress}
-          onLoading={setLoading}
-          onCamError={setCameraError}
-        />
-      )}
-
-      {/* LOADING OVERLAY */}
-      {loading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/40 z-30">
-          <p className="text-white text-lg">Loading camera…</p>
-        </div>
-      )}
-
-      {/* ERROR OVERLAY */}
-      {cameraError && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 z-40 gap-4">
+      ) : cameraError ? (
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 z-40 gap-4 min-h-full">
           <p className="text-red-500 font-semibold">{cameraError}</p>
           <button
             onClick={() => window.location.reload()}
@@ -77,6 +61,19 @@ export default function MyCam({ selectedDress }) {
               accept="image/*"
             />
           </div>
+        </div>
+      ) : (
+        <VideoFrame
+          selectedDress={selectedDress}
+          onLoading={setLoading}
+          onCamError={setCameraError}
+        />
+      )}
+
+      {/* LOADING OVERLAY */}
+      {loading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/40 z-30 min-h-full">
+          <p className="text-white text-lg">Loading camera…</p>
         </div>
       )}
     </div>

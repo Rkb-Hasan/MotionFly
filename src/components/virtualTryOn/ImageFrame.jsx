@@ -12,11 +12,16 @@ export default function ImageFrame({ imageSrc, selectedDress }) {
   const [poseReady, setPoseReady] = useState(false);
   const [dressReady, setDressReady] = useState(false);
   const dressImgRef = useRef(null);
-
+  const [tryLoader, setTryLoader] = useState({ state: true, message: "" });
   useEffect(() => {
     let ignore = false;
 
     const initPose = async () => {
+      setTryLoader({
+        ...tryLoader,
+        state: true,
+        message: "pose initializing..",
+      });
       try {
         const vision = await FilesetResolver.forVisionTasks(
           "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/wasm"
@@ -37,6 +42,7 @@ export default function ImageFrame({ imageSrc, selectedDress }) {
           }
         );
         setPoseReady(true);
+        setTryLoader({ ...tryLoader, message: "pose initilized..." });
       } catch (err) {
         console.log(err);
       }
@@ -142,19 +148,19 @@ export default function ImageFrame({ imageSrc, selectedDress }) {
           dressHeight
         );
       }
+      setTryLoader({ ...tryLoader, state: false, message: "" });
     };
 
     if (image.complete) {
+      setTryLoader({ ...tryLoader, message: "running the detection" });
       runDetection();
     } else {
       image.onload = runDetection;
     }
-  }, [imageSrc, poseReady]);
+  }, [imageSrc, poseReady, dressReady]);
 
   useEffect(() => {
     if (!selectedDress) return;
-
-    setDressReady(false); // reset on change
 
     const img = new Image();
     img.src = selectedDress;
@@ -167,6 +173,7 @@ export default function ImageFrame({ imageSrc, selectedDress }) {
 
   return (
     <div className="relative  flex max-w-[40%] max-h-[40%] justify-center items-center ">
+      {tryLoader.state && <p className="text-red-400">{tryLoader.message}</p>}
       <img
         ref={imgRef}
         src={imageSrc}
